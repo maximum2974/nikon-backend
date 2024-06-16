@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maximum.nikonbackend.mapper.ShippingRecordsMapper">
+
+    <resultMap id="BaseResultMap" type="com.maximum.nikonbackend.model.entity.ShippingRecords">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="product_id" column="product_id" jdbcType="BIGINT"/>
+            <result property="user_id" column="user_id" jdbcType="BIGINT"/>
+            <result property="quantity" column="quantity" jdbcType="INTEGER"/>
+            <result property="credit_card_number" column="credit_card_number" jdbcType="VARCHAR"/>
+            <result property="email" column="email" jdbcType="VARCHAR"/>
+            <result property="shipping_address" column="shipping_address" jdbcType="VARCHAR"/>
+            <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,product_id,user_id,
+        quantity,credit_card_number,email,
+        shipping_address,create_time
+    </sql>
+</mapper>

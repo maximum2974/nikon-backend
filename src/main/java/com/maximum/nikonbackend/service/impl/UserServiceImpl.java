@@ -29,9 +29,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private static final String SALT = "nikon";
 
     @Override
-    public long userRegister(String userAccount, String userPassword, String checkPassword) {
-        if(StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)){
+    public long userRegister(String username, String userAccount, String userPassword, String checkPassword) {
+        if(StringUtils.isAnyBlank(username, userAccount, userPassword, checkPassword)){
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "parameter is empty");
+        }
+        if(username.length() < 4){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "user name is too short");
         }
         if(userAccount.length() < 4){
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "user account is too short");
@@ -51,6 +54,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             }
             String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
             User user = new User();
+            user.setUserName(username);
             user.setUserAccount(userAccount);
             user.setUserPassword(encryptPassword);
             boolean result = this.save(user);

@@ -2,13 +2,13 @@ package com.maximum.nikonbackend.common;
 
 public enum ErrorCode {
     SUCCESS(0, "ok"),
-    PARAMS_ERROR(40000, "Request parameter error"),
-    NOT_LOGIN_ERROR(40100, "Not login"),
-    NO_AUTH_ERROR(40101, "No auth"),
-    NOT_FOUND_ERROR(40400, "Request data does not exist"),
-    FORBIDDEN_ERROR(40300, "Access forbidden"),
-    SYSTEM_ERROR(50000, "System internal exception"),
-    OPERATION_ERROR(50001, "Operation failure");
+    PARAMS_ERROR(40000, "request parameter error"),
+    NOT_LOGIN_ERROR(40100, "not login"),
+    NO_AUTH_ERROR(40101, "no auth"),
+    NOT_FOUND_ERROR(40400, "request data does not exist"),
+    FORBIDDEN_ERROR(40300, "access forbidden"),
+    SYSTEM_ERROR(50000, "system internal exception"),
+    OPERATION_ERROR(50001, "operation failure");
 
     private final int code;
     private final String message;

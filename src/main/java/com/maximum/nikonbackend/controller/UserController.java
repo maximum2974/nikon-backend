@@ -36,18 +36,19 @@ public class UserController {
         if(userRegisterRequest == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+        String username = userRegisterRequest.getUsername();
         String userAccount = userRegisterRequest.getUserAccount();
         String userPassword = userRegisterRequest.getUserPassword();
         String checkPassword = userRegisterRequest.getCheckPassword();
-        if(StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)){
+        if(StringUtils.isAnyBlank(username, userAccount, userPassword, checkPassword)){
             return null;
         }
-        long result = userService.userRegister(userAccount, userPassword, checkPassword);
+        long result = userService.userRegister(username, userAccount, userPassword, checkPassword);
         return ResultUtils.success(result);
     }
 
     @PostMapping("/login")
-    public BaseResponse<User> userLogin(@RequestBody UserLoginRequest userLoginRequest,
+    public BaseResponse<UserVO> userLogin(@RequestBody UserLoginRequest userLoginRequest,
                                         HttpServletRequest request){
         if(userLoginRequest == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -58,7 +59,9 @@ public class UserController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         User user = userService.userLogin(userAccount, userPassword, request);
-        return ResultUtils.success(user);
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(user, userVO);
+        return ResultUtils.success(userVO);
     }
 
     @GetMapping("/get/login")
