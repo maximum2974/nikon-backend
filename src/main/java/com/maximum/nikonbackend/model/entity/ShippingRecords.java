@@ -23,6 +23,11 @@ public class ShippingRecords implements Serializable {
     private Long id;
 
     /**
+     *
+     */
+    private String uuid;
+
+    /**
      * 
      */
     private Long productId;
