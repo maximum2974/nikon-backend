@@ -20,10 +20,6 @@ import java.util.Date;
 @Data
 public class UserVO implements Serializable {
 
-    /**
-     * id
-     */
-    private Long id;
 
     /**
      *
@@ -50,15 +46,6 @@ public class UserVO implements Serializable {
      */
     private String userRole;
 
-    /**
-     *
-     */
-    private Date createTime;
-
-    /**
-     *
-     */
-    private Date updateTime;
 
     private static final long serialVersionUID = 1L;
 }
