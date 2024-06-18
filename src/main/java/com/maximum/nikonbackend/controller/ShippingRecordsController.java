@@ -1,5 +1,6 @@
 package com.maximum.nikonbackend.controller;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.maximum.nikonbackend.annotation.AuthCheck;
 import com.maximum.nikonbackend.common.BaseResponse;
 import com.maximum.nikonbackend.common.ErrorCode;
@@ -14,12 +15,9 @@ import com.maximum.nikonbackend.service.ShippingRecordsService;
 import com.maximum.nikonbackend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @BelongsProject: nikon-backend

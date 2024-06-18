@@ -2,8 +2,11 @@ package com.maximum.nikonbackend.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
+
 import com.maximum.nikonbackend.model.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.io.IOException;
 
 public interface UserService extends IService<User> {
 
@@ -45,4 +48,5 @@ public interface UserService extends IService<User> {
      * @return
      */
     boolean isAdmin(HttpServletRequest request);
+
 }

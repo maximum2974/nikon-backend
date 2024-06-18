@@ -6,7 +6,19 @@ spring:
     url: jdbc:mysql://localhost:3306/nikon
     username: root
     password: LYH20031123
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
 server:
   port: 8080
   servlet:
     context-path: /api
+
+github:
+  bucket:
+    user: "maximum2974"
+    repository: "image"
+    access-token: "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"
+    url: "https://cdn.jsdelivr.net/gh/${github.bucket.user}/${github.bucket.repository}/"
+    api: "https://api.github.com/repos/${github.bucket.user}/${github.bucket.repository}/contents/"

@@ -1,8 +1,11 @@
 package com.maximum.nikonbackend.controller;
 
+import com.maximum.nikonbackend.annotation.AuthCheck;
 import com.maximum.nikonbackend.common.BaseResponse;
 import com.maximum.nikonbackend.common.ErrorCode;
+import com.maximum.nikonbackend.common.GithubUploaderUtils;
 import com.maximum.nikonbackend.common.ResultUtils;
+import com.maximum.nikonbackend.constant.UserConstant;
 import com.maximum.nikonbackend.exception.BusinessException;
 import com.maximum.nikonbackend.model.dto.user.UserLoginRequest;
 import com.maximum.nikonbackend.model.dto.user.UserRegisterRequest;
@@ -15,6 +18,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 /**
  * @BelongsProject: nikon-backend
@@ -30,6 +36,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private GithubUploaderUtils githubUploaderUtils;
 
     @PostMapping("register")
     public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest){
@@ -78,6 +86,38 @@ public class UserController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         boolean result = userService.userLogout(request);
+        return ResultUtils.success(result);
+    }
+
+
+    @PostMapping("/update")
+    @AuthCheck(anyRole = {UserConstant.DEFAULT_ROLE, UserConstant.ADMIN_ROLE})
+    public BaseResponse<Boolean> updateUserInfo(@RequestParam(value = "userName", required = false) String userName,
+                                                 @RequestParam(value = "userAvatar", required = false) MultipartFile userAvatar,
+                                                 @RequestParam(value = "gender", required = false) Integer gender,
+                                                 HttpServletRequest request) throws IOException {
+        User user = userService.getLoginUser(request);
+        if (userName != null) {
+            if (userName.length() > 4) {
+                user.setUserName(userName);
+            } else {
+                throw new BusinessException(ErrorCode.PARAMS_ERROR, "user name is too short");
+            }
+        }
+        if(userAvatar != null){
+            String upload = githubUploaderUtils.upload(userAvatar);
+            user.setUserAvatar(upload);
+        }
+        if(gender != null){
+            if(gender != 1 && gender != 0){
+                throw new BusinessException(ErrorCode.PARAMS_ERROR);
+            }
+            user.setGender(gender);
+        }
+        boolean result = userService.updateById(user);
+        if(!result){
+            throw new BusinessException(ErrorCode.OPERATION_ERROR);
+        }
         return ResultUtils.success(result);
     }
 }
