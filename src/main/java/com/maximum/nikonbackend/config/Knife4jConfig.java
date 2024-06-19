@@ -8,14 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
-/**
- * @BelongsProject: nikon-backend
- * @BelongsPackage: com.maximum.nikonbackend.config
- * @Author: maximum
- * @CreateTime: 2024-06-15
- * @Version: 1.0
- */
-
 @Configuration
 public class Knife4jConfig {
     @Bean

@@ -1,21 +1,20 @@
 package com.maximum.nikonbackend.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maximum.nikonbackend.annotation.AuthCheck;
-import com.maximum.nikonbackend.common.BaseResponse;
-import com.maximum.nikonbackend.common.ErrorCode;
-import com.maximum.nikonbackend.common.GithubUploaderUtils;
-import com.maximum.nikonbackend.common.ResultUtils;
+import com.maximum.nikonbackend.common.*;
 import com.maximum.nikonbackend.constant.UserConstant;
 import com.maximum.nikonbackend.exception.BusinessException;
-import com.maximum.nikonbackend.model.dto.productDetails.ProductDetailsAddRequest;
-import com.maximum.nikonbackend.model.dto.productDetails.ProductDetailsUpdateRequest;
 import com.maximum.nikonbackend.model.entity.Inventory;
 import com.maximum.nikonbackend.model.entity.ProductDetails;
+import com.maximum.nikonbackend.model.vo.ProductDetailsVo;
 import com.maximum.nikonbackend.service.InventoryService;
 import com.maximum.nikonbackend.service.ProductDetailsService;
 import com.maximum.nikonbackend.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @BelongsProject: nikon-backend
@@ -130,7 +132,7 @@ public class ProductDetailsController {
         return ResultUtils.success(true);
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> deleteProductDetails(String uuid){
         if(uuid == null){
@@ -143,10 +145,78 @@ public class ProductDetailsController {
         if(productDetails.getIsDiscontinued() == 1){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        boolean result = productDetailsService.removeById(productDetails.getId());
+        productDetails.setIsDiscontinued(1);
+        boolean result = productDetailsService.updateById(productDetails);
         if(!result){
             throw new BusinessException(ErrorCode.OPERATION_ERROR);
         }
         return ResultUtils.success(result);
+    }
+
+    @GetMapping("/list/user")
+    public BaseResponse<Page<ProductDetailsVo>> getUserProductDetails(PageRequest pageRequest){
+        if(pageRequest == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        long current = pageRequest.getCurrent();
+        long size = pageRequest.getPageSize();
+        if(size > 50){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        QueryWrapper<ProductDetails> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("is_discontinued", 0);
+        Page<ProductDetails> productDetailsPage = productDetailsService.page(new Page<>(current, size), queryWrapper);
+        List<ProductDetails> productDetailsList = productDetailsPage.getRecords();
+        if(productDetailsList.isEmpty()){
+            return ResultUtils.success(new Page<>());
+        }
+        List<Long> idList = productDetailsList.stream()
+                .map(ProductDetails::getId)
+                .toList();
+        Map<Long, Integer> inventoryMap = inventoryService.getQuantitiesByProductIds(idList);
+        List<ProductDetailsVo> productDetailsVoList = productDetailsList.stream().map(productDetails -> {
+            ProductDetailsVo productDetailsVo = new ProductDetailsVo();
+            BeanUtils.copyProperties(productDetails, productDetailsVo);
+            productDetailsVo.setQuantity(inventoryMap.getOrDefault(productDetails.getId(), 0));
+            return productDetailsVo;
+        }).collect(Collectors.toList());
+        Page<ProductDetailsVo> productDetailsVoPage = new Page<>(current, size, productDetailsPage.getTotal());
+        productDetailsVoPage.setRecords(productDetailsVoList);
+
+        return ResultUtils.success(productDetailsVoPage);
+    }
+
+    @GetMapping("/list/admin")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Page<ProductDetailsVo>> getAdminProductDetails(PageRequest pageRequest){
+        if(pageRequest == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        long current = pageRequest.getCurrent();
+        long size = pageRequest.getPageSize();
+        if(size > 50){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        QueryWrapper<ProductDetails> queryWrapper = new QueryWrapper<>();
+        queryWrapper.apply("is_discontinued = 1");
+        Page<ProductDetails> productDetailsPage = productDetailsService.page(new Page<>(current, size), queryWrapper);
+        List<ProductDetails> productDetailsList = productDetailsPage.getRecords();
+        if(productDetailsList.isEmpty()){
+            return ResultUtils.success(new Page<>());
+        }
+        List<Long> idList = productDetailsList.stream()
+                .map(ProductDetails::getId)
+                .toList();
+        Map<Long, Integer> inventoryMap = inventoryService.getQuantitiesByProductIds(idList);
+        List<ProductDetailsVo> productDetailsVoList = productDetailsList.stream().map(productDetails -> {
+            ProductDetailsVo productDetailsVo = new ProductDetailsVo();
+            BeanUtils.copyProperties(productDetails, productDetailsVo);
+            productDetailsVo.setQuantity(inventoryMap.getOrDefault(productDetails.getId(), 0));
+            return productDetailsVo;
+        }).collect(Collectors.toList());
+        Page<ProductDetailsVo> productDetailsVoPage = new Page<>(current, size, productDetailsPage.getTotal());
+        productDetailsVoPage.setRecords(productDetailsVoList);
+
+        return ResultUtils.success(productDetailsVoPage);
     }
 }

@@ -58,7 +58,6 @@ public class ProductDetails implements Serializable {
     /**
      * 
      */
-    @TableLogic
     private Integer isDiscontinued;
 
     @TableField(exist = false)
