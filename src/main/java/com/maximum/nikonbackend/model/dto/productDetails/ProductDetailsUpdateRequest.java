@@ -1,6 +1,7 @@
 package com.maximum.nikonbackend.model.dto.productDetails;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -39,6 +40,11 @@ public class ProductDetailsUpdateRequest implements Serializable {
      *
      */
     private Integer quantity;
+
+    /**
+     *
+     */
+    private MultipartFile productImage;
 
     private static final long serialVersionUID = -4764753844199057497L;
 }

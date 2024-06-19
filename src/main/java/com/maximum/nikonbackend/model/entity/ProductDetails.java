@@ -41,6 +41,11 @@ public class ProductDetails implements Serializable {
     private BigDecimal productPrice;
 
     /**
+     *
+     */
+    private String productUrl;
+
+    /**
      * 
      */
     private Date createTime;

@@ -32,7 +32,7 @@ public class ProductDetailsServiceImpl extends ServiceImpl<ProductDetailsMapper,
 
     @Override
     @Transactional
-    public boolean addProductDetails(String productName, String productDescription, BigDecimal productPrice, Integer quantity) {
+    public boolean addProductDetails(String productName, String productDescription, BigDecimal productPrice, Integer quantity, String productUrl) {
         ProductDetails productDetails = new ProductDetails();
         String uuid = UUID.randomUUID().toString();
         synchronized (uuid.intern()){
@@ -40,6 +40,7 @@ public class ProductDetailsServiceImpl extends ServiceImpl<ProductDetailsMapper,
             productDetails.setProductDescription(productDescription);
             productDetails.setProductPrice(productPrice);
             productDetails.setUuid(uuid);
+            productDetails.setProductUrl(productUrl);
             int result = productDetailsMapper.insert(productDetails);
             if(result != 1){
                 throw new BusinessException(ErrorCode.OPERATION_ERROR);
@@ -124,7 +125,11 @@ public class ProductDetailsServiceImpl extends ServiceImpl<ProductDetailsMapper,
         }
         QueryWrapper<ProductDetails> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("uuid", uuid);
-        return productDetailsMapper.selectOne(queryWrapper);
+        ProductDetails productDetails = productDetailsMapper.selectOne(queryWrapper);
+        if(productDetails == null){
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        return productDetails;
     }
 }
 

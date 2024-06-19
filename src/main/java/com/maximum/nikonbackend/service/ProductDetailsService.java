@@ -17,7 +17,7 @@ public interface ProductDetailsService extends IService<ProductDetails> {
      * @param quantity
      * @return
      */
-    boolean addProductDetails(String productName, String productDescription, BigDecimal productPrice, Integer quantity);
+    boolean addProductDetails(String productName, String productDescription, BigDecimal productPrice, Integer quantity, String productUrl);
 
     /**
      * update product details
