@@ -32,4 +32,11 @@ public interface ProductDetailsService extends IService<ProductDetails> {
      * @return
      */
     ProductDetails getProductDetailsByUuid(String uuid);
+
+    /**
+     *
+     * @param productId
+     * @return
+     */
+    ProductDetails getProductDetailsById(Long productId);
 }

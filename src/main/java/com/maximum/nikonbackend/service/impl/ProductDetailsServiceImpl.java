@@ -131,6 +131,11 @@ public class ProductDetailsServiceImpl extends ServiceImpl<ProductDetailsMapper,
         }
         return productDetails;
     }
+
+    @Override
+    public ProductDetails getProductDetailsById(Long productId) {
+        return productDetailsMapper.selectById(productId);
+    }
 }
 
 

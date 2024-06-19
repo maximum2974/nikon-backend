@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 
 @Data
-public class ProductDetailsVo implements Serializable {
+public class ProductDetailsVO implements Serializable {
 
     /**
      *

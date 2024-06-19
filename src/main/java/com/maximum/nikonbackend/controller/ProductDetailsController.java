@@ -9,7 +9,7 @@ import com.maximum.nikonbackend.constant.UserConstant;
 import com.maximum.nikonbackend.exception.BusinessException;
 import com.maximum.nikonbackend.model.entity.Inventory;
 import com.maximum.nikonbackend.model.entity.ProductDetails;
-import com.maximum.nikonbackend.model.vo.ProductDetailsVo;
+import com.maximum.nikonbackend.model.vo.ProductDetailsVO;
 import com.maximum.nikonbackend.service.InventoryService;
 import com.maximum.nikonbackend.service.ProductDetailsService;
 import com.maximum.nikonbackend.service.UserService;
@@ -154,7 +154,7 @@ public class ProductDetailsController {
     }
 
     @GetMapping("/list/user")
-    public BaseResponse<Page<ProductDetailsVo>> getUserProductDetails(PageRequest pageRequest){
+    public BaseResponse<Page<ProductDetailsVO>> getUserProductDetails(PageRequest pageRequest){
         if(pageRequest == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -174,21 +174,21 @@ public class ProductDetailsController {
                 .map(ProductDetails::getId)
                 .toList();
         Map<Long, Integer> inventoryMap = inventoryService.getQuantitiesByProductIds(idList);
-        List<ProductDetailsVo> productDetailsVoList = productDetailsList.stream().map(productDetails -> {
-            ProductDetailsVo productDetailsVo = new ProductDetailsVo();
+        List<ProductDetailsVO> productDetailsVOList = productDetailsList.stream().map(productDetails -> {
+            ProductDetailsVO productDetailsVo = new ProductDetailsVO();
             BeanUtils.copyProperties(productDetails, productDetailsVo);
             productDetailsVo.setQuantity(inventoryMap.getOrDefault(productDetails.getId(), 0));
             return productDetailsVo;
         }).collect(Collectors.toList());
-        Page<ProductDetailsVo> productDetailsVoPage = new Page<>(current, size, productDetailsPage.getTotal());
-        productDetailsVoPage.setRecords(productDetailsVoList);
+        Page<ProductDetailsVO> productDetailsVoPage = new Page<>(current, size, productDetailsPage.getTotal());
+        productDetailsVoPage.setRecords(productDetailsVOList);
 
         return ResultUtils.success(productDetailsVoPage);
     }
 
     @GetMapping("/list/admin")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<Page<ProductDetailsVo>> getAdminProductDetails(PageRequest pageRequest){
+    public BaseResponse<Page<ProductDetailsVO>> getAdminProductDetails(PageRequest pageRequest){
         if(pageRequest == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -208,14 +208,14 @@ public class ProductDetailsController {
                 .map(ProductDetails::getId)
                 .toList();
         Map<Long, Integer> inventoryMap = inventoryService.getQuantitiesByProductIds(idList);
-        List<ProductDetailsVo> productDetailsVoList = productDetailsList.stream().map(productDetails -> {
-            ProductDetailsVo productDetailsVo = new ProductDetailsVo();
+        List<ProductDetailsVO> productDetailsVOList = productDetailsList.stream().map(productDetails -> {
+            ProductDetailsVO productDetailsVo = new ProductDetailsVO();
             BeanUtils.copyProperties(productDetails, productDetailsVo);
             productDetailsVo.setQuantity(inventoryMap.getOrDefault(productDetails.getId(), 0));
             return productDetailsVo;
         }).collect(Collectors.toList());
-        Page<ProductDetailsVo> productDetailsVoPage = new Page<>(current, size, productDetailsPage.getTotal());
-        productDetailsVoPage.setRecords(productDetailsVoList);
+        Page<ProductDetailsVO> productDetailsVoPage = new Page<>(current, size, productDetailsPage.getTotal());
+        productDetailsVoPage.setRecords(productDetailsVOList);
 
         return ResultUtils.success(productDetailsVoPage);
     }
