@@ -7,6 +7,8 @@ import com.maximum.nikonbackend.annotation.AuthCheck;
 import com.maximum.nikonbackend.common.*;
 import com.maximum.nikonbackend.constant.UserConstant;
 import com.maximum.nikonbackend.exception.BusinessException;
+import com.maximum.nikonbackend.model.dto.productDetails.AddProductRequest;
+import com.maximum.nikonbackend.model.dto.productDetails.UpdateProductRequest;
 import com.maximum.nikonbackend.model.entity.Inventory;
 import com.maximum.nikonbackend.model.entity.ProductDetails;
 import com.maximum.nikonbackend.model.vo.ProductDetailsVO;
@@ -49,21 +51,19 @@ public class ProductDetailsController {
     private GithubUploaderUtils githubUploaderUtils;
 
     /**
-     * admin add product and inventory
-     * @param productName
-     * @param productDescription
-     * @param productPrice
-     * @param quantity
-     * @param productImage
+     * admin add product
+     * @param addProductRequest
      * @return
+     * @throws IOException
      */
     @PostMapping("/add")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<Boolean> addProductDetails(@RequestParam(value = "productName", required = true) String productName,
-                                                   @RequestParam(value = "productDescription", required = true) String productDescription,
-                                                   @RequestParam(value = "productPrice", required = true) BigDecimal productPrice,
-                                                   @RequestParam(value = "quantity", required = true) Integer quantity,
-                                                   @RequestParam(value = "productImage", required = true)MultipartFile productImage) throws IOException {
+    public BaseResponse<Boolean> addProductDetails(@RequestBody AddProductRequest addProductRequest){
+        String productName = addProductRequest.getProductName();
+        String productDescription = addProductRequest.getProductDescription();
+        BigDecimal productPrice = addProductRequest.getProductPrice();
+        Integer quantity = addProductRequest.getQuantity();
+        String productImage = addProductRequest.getProductImage();
         if(StringUtils.isAnyBlank(productName, productDescription)){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -76,8 +76,7 @@ public class ProductDetailsController {
         if(productImage == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        String productUrl = githubUploaderUtils.upload(productImage);
-        boolean result = productDetailsService.addProductDetails(productName, productDescription, productPrice, quantity, productUrl);
+        boolean result = productDetailsService.addProductDetails(productName, productDescription, productPrice, quantity, productImage);
         if(!result){
             throw new BusinessException(ErrorCode.OPERATION_ERROR);
         }
@@ -87,12 +86,13 @@ public class ProductDetailsController {
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     @Transactional
-    public BaseResponse<Boolean> updateProductDetails(@RequestParam(value = "uuid", required = true) String uuid,
-                                                      @RequestParam(value = "productName", required = false) String productName,
-                                                      @RequestParam(value = "productDescription", required = false) String productDescription,
-                                                      @RequestParam(value = "productPrice", required = false) BigDecimal productPrice,
-                                                      @RequestParam(value = "quantity", required = false) Integer quantity,
-                                                      @RequestParam(value = "productImage", required = false)MultipartFile productImage) throws IOException {
+    public BaseResponse<Boolean> updateProductDetails(@RequestBody UpdateProductRequest updateProductRequest) throws IOException {
+        String uuid = updateProductRequest.getUuid();
+        String productName = updateProductRequest.getProductName();
+        String productDescription = updateProductRequest.getProductDescription();
+        BigDecimal productPrice = updateProductRequest.getProductPrice();
+        Integer quantity = updateProductRequest.getQuantity();
+        String productImage = updateProductRequest.getProductImage();
         if(uuid == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -109,8 +109,7 @@ public class ProductDetailsController {
             }
         }
         if(productImage != null){
-            String productUrl = githubUploaderUtils.upload(productImage);
-            productDetails.setProductUrl(productUrl);
+            productDetails.setProductUrl(productImage);
         }
         boolean result = productDetailsService.updateById(productDetails);
         if(!result){
@@ -130,6 +129,27 @@ public class ProductDetailsController {
             }
         }
         return ResultUtils.success(true);
+    }
+
+    @PostMapping("/putaway")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> putawayProductDetails(String uuid){
+        if(uuid == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        ProductDetails productDetails = productDetailsService.getProductDetailsByUuid(uuid);
+        if(productDetails == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        if(productDetails.getIsDiscontinued() == 0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        productDetails.setIsDiscontinued(0);
+        boolean result = productDetailsService.updateById(productDetails);
+        if(!result){
+            throw new BusinessException(ErrorCode.OPERATION_ERROR);
+        }
+        return ResultUtils.success(result);
     }
 
     @PostMapping("/delete")
@@ -154,13 +174,9 @@ public class ProductDetailsController {
     }
 
     @GetMapping("/list/user")
-    public BaseResponse<Page<ProductDetailsVO>> getUserProductDetails(PageRequest pageRequest){
-        if(pageRequest == null){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        long current = pageRequest.getCurrent();
-        long size = pageRequest.getPageSize();
-        if(size > 50){
+    public BaseResponse<Page<ProductDetailsVO>> getUserProductDetails(@RequestParam long current,
+                                                                      @RequestParam long size){
+        if(current < 0 || size <= 0 || size > 50){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         QueryWrapper<ProductDetails> queryWrapper = new QueryWrapper<>();
@@ -188,13 +204,9 @@ public class ProductDetailsController {
 
     @GetMapping("/list/admin")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<Page<ProductDetailsVO>> getAdminProductDetails(PageRequest pageRequest){
-        if(pageRequest == null){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        long current = pageRequest.getCurrent();
-        long size = pageRequest.getPageSize();
-        if(size > 50){
+    public BaseResponse<Page<ProductDetailsVO>> getAdminProductDetails(@RequestParam long current,
+                                                                       @RequestParam long size){
+        if(current < 0 || size <= 0 || size > 50){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         QueryWrapper<ProductDetails> queryWrapper = new QueryWrapper<>();

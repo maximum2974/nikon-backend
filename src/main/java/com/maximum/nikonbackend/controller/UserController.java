@@ -9,6 +9,7 @@ import com.maximum.nikonbackend.constant.UserConstant;
 import com.maximum.nikonbackend.exception.BusinessException;
 import com.maximum.nikonbackend.model.dto.user.UserLoginRequest;
 import com.maximum.nikonbackend.model.dto.user.UserRegisterRequest;
+import com.maximum.nikonbackend.model.dto.user.UserUpdateInfoRequest;
 import com.maximum.nikonbackend.model.entity.User;
 import com.maximum.nikonbackend.model.vo.UserVO;
 import com.maximum.nikonbackend.service.UserService;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -92,10 +94,11 @@ public class UserController {
 
     @PostMapping("/update")
     @AuthCheck(anyRole = {UserConstant.DEFAULT_ROLE, UserConstant.ADMIN_ROLE})
-    public BaseResponse<Boolean> updateUserInfo(@RequestParam(value = "userName", required = false) String userName,
-                                                 @RequestParam(value = "userAvatar", required = false) MultipartFile userAvatar,
-                                                 @RequestParam(value = "gender", required = false) Integer gender,
+    public BaseResponse<Boolean> updateUserInfo(@RequestBody UserUpdateInfoRequest userUpdateInfoRequest,
                                                  HttpServletRequest request) throws IOException {
+        String userName = userUpdateInfoRequest.getUserName();
+        String userAvatar = userUpdateInfoRequest.getUserAvatar();
+        Integer gender = userUpdateInfoRequest.getGender();
         User user = userService.getLoginUser(request);
         if (userName != null) {
             if (userName.length() > 4) {
@@ -105,8 +108,7 @@ public class UserController {
             }
         }
         if(userAvatar != null){
-            String upload = githubUploaderUtils.upload(userAvatar);
-            user.setUserAvatar(upload);
+            user.setUserAvatar(userAvatar);
         }
         if(gender != null){
             if(gender != 1 && gender != 0){

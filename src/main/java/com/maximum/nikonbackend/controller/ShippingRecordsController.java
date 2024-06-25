@@ -1,6 +1,5 @@
 package com.maximum.nikonbackend.controller;
 
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maximum.nikonbackend.annotation.AuthCheck;
 import com.maximum.nikonbackend.common.BaseResponse;
