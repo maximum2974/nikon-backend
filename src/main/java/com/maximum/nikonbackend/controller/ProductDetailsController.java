@@ -8,6 +8,8 @@ import com.maximum.nikonbackend.common.*;
 import com.maximum.nikonbackend.constant.UserConstant;
 import com.maximum.nikonbackend.exception.BusinessException;
 import com.maximum.nikonbackend.model.dto.productDetails.AddProductRequest;
+import com.maximum.nikonbackend.model.dto.productDetails.DeleteRequest;
+import com.maximum.nikonbackend.model.dto.productDetails.PutawayRequest;
 import com.maximum.nikonbackend.model.dto.productDetails.UpdateProductRequest;
 import com.maximum.nikonbackend.model.entity.Inventory;
 import com.maximum.nikonbackend.model.entity.ProductDetails;
@@ -21,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -63,7 +64,7 @@ public class ProductDetailsController {
         String productDescription = addProductRequest.getProductDescription();
         BigDecimal productPrice = addProductRequest.getProductPrice();
         Integer quantity = addProductRequest.getQuantity();
-        String productImage = addProductRequest.getProductImage();
+        String productImage = addProductRequest.getProductUrl();
         if(StringUtils.isAnyBlank(productName, productDescription)){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -92,7 +93,7 @@ public class ProductDetailsController {
         String productDescription = updateProductRequest.getProductDescription();
         BigDecimal productPrice = updateProductRequest.getProductPrice();
         Integer quantity = updateProductRequest.getQuantity();
-        String productImage = updateProductRequest.getProductImage();
+        String productImage = updateProductRequest.getProductUrl();
         if(uuid == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -133,7 +134,8 @@ public class ProductDetailsController {
 
     @PostMapping("/putaway")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<Boolean> putawayProductDetails(String uuid){
+    public BaseResponse<Boolean> putawayProductDetails(@RequestBody PutawayRequest putawayRequest){
+        String uuid = putawayRequest.getUuid();
         if(uuid == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -154,7 +156,8 @@ public class ProductDetailsController {
 
     @PostMapping("/delete")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<Boolean> deleteProductDetails(String uuid){
+    public BaseResponse<Boolean> deleteProductDetails(@RequestBody DeleteRequest deleteRequest){
+        String uuid = deleteRequest.getUuid();
         if(uuid == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }

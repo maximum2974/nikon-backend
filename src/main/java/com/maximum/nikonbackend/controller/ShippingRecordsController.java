@@ -65,13 +65,13 @@ public class ShippingRecordsController {
 
     @GetMapping("/list")
     @AuthCheck(mustRole = UserConstant.DEFAULT_ROLE)
-    public BaseResponse<Page<ShippingRecordsVO>> getUserShippingRecords(PageRequest pageRequest, HttpServletRequest request){
-        if(pageRequest == null){
+    public BaseResponse<Page<ShippingRecordsVO>> getUserShippingRecords(@RequestParam long current,
+                                                                        @RequestParam long size,
+                                                                        HttpServletRequest request){
+        if (current <= 0 || size <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         User user = userService.getLoginUser(request);
-        long current = pageRequest.getCurrent();
-        long size = pageRequest.getPageSize();
         if(size > 50){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }

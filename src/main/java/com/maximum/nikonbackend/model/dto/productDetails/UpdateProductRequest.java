@@ -21,5 +21,5 @@ public class UpdateProductRequest implements Serializable {
     private String productDescription;
     private BigDecimal productPrice;
     private Integer quantity;
-    private String productImage;
+    private String productUrl;
 }
