@@ -24,7 +24,6 @@ com\maximum\nikonbackend\model\dto\feedback\AddFeedbackRequest.class
 com\maximum\nikonbackend\model\entity\ShippingRecords.class
 com\maximum\nikonbackend\service\ProductDetailsService.class
 com\maximum\nikonbackend\service\impl\EmailServiceImpl.class
-com\maximum\nikonbackend\config\CorsConfig.class
 com\maximum\nikonbackend\NikonBackendApplication.class
 com\maximum\nikonbackend\model\entity\User.class
 com\maximum\nikonbackend\controller\UserController.class

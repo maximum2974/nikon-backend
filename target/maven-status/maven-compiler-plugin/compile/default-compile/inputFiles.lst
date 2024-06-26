@@ -6,7 +6,6 @@ E:\java\code\nikon-backend\src\main\java\com\maximum\nikonbackend\common\ErrorCo
 E:\java\code\nikon-backend\src\main\java\com\maximum\nikonbackend\common\GithubUploaderUtils.java
 E:\java\code\nikon-backend\src\main\java\com\maximum\nikonbackend\common\PageRequest.java
 E:\java\code\nikon-backend\src\main\java\com\maximum\nikonbackend\common\ResultUtils.java
-E:\java\code\nikon-backend\src\main\java\com\maximum\nikonbackend\config\CorsConfig.java
 E:\java\code\nikon-backend\src\main\java\com\maximum\nikonbackend\config\Knife4jConfig.java
 E:\java\code\nikon-backend\src\main\java\com\maximum\nikonbackend\config\MyBatisPlusConfig.java
 E:\java\code\nikon-backend\src\main\java\com\maximum\nikonbackend\config\RestTemplateConfig.java
