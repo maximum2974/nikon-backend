@@ -3,7 +3,7 @@ spring:
     name: nikon-backend
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/nikon
+    url: jdbc:mysql://45.145.228.53:3306/nikon
     username: root
     password: LYH20031123
   servlet:
