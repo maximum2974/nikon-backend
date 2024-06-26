@@ -2,7 +2,7 @@ package com.maximum.nikonbackend.service.impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maximum.nikonbackend.common.ErrorCode;
 import com.maximum.nikonbackend.common.GithubUploaderUtils;
@@ -16,11 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-
-import java.io.IOException;
 
 import static com.maximum.nikonbackend.constant.UserConstant.ADMIN_ROLE;
 import static com.maximum.nikonbackend.constant.UserConstant.USER_LOGIN_STATE;
@@ -30,7 +26,7 @@ import static com.maximum.nikonbackend.constant.UserConstant.USER_LOGIN_STATE;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements UserService {
 
-    @Resource
+    @Autowired
     private GithubUploaderUtils githubUploaderUtils;
 
     @Autowired
