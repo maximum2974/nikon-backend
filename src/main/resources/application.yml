@@ -6,7 +6,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://localhost8080:3306/nikon
     username: root
-    password: LYH20031123
+    password: 12345678
   servlet:
     multipart:
       max-file-size: 10MB
