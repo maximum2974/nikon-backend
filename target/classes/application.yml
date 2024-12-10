@@ -4,9 +4,9 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://localhost8080:3306/nikon
+    url: jdbc:mysql://localhost:3306/nikon
     username: root
-    password: 12345678
+    password: LYH20031123
   servlet:
     multipart:
       max-file-size: 10MB
@@ -26,6 +26,6 @@ github:
   bucket:
     user: "maximum2974"
     repository: "image"
-    access-token: "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"
+    access-token: "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"
     url: "https://cdn.jsdelivr.net/gh/${github.bucket.user}/${github.bucket.repository}/"
     api: "https://api.github.com/repos/${github.bucket.user}/${github.bucket.repository}/contents/"

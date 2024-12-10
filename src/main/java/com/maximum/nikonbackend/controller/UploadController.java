@@ -7,6 +7,8 @@ import com.maximum.nikonbackend.common.GithubUploaderUtils;
 import com.maximum.nikonbackend.common.ResultUtils;
 import com.maximum.nikonbackend.constant.UserConstant;
 import com.maximum.nikonbackend.exception.BusinessException;
+import com.maximum.nikonbackend.model.entity.UploadImage;
+import com.maximum.nikonbackend.service.UploadService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class UploadController {
     @Autowired
     private GithubUploaderUtils githubUploaderUtils;
+    @Autowired
+    private UploadService uploadService;
 
 
     @PostMapping("/upload")
@@ -40,6 +44,9 @@ public class UploadController {
 
         try {
             String userAvatar = githubUploaderUtils.upload(file);
+            UploadImage uploadImage = new UploadImage();
+            uploadImage.setImage(userAvatar);
+            uploadService.save(uploadImage);
             return ResultUtils.success(userAvatar);
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "An error occurred while uploading the file");
