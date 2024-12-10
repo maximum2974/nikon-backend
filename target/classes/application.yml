@@ -26,6 +26,6 @@ github:
   bucket:
     user: "maximum2974"
     repository: "image"
-    access-token: "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"
+    access-token: "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"
     url: "https://cdn.jsdelivr.net/gh/${github.bucket.user}/${github.bucket.repository}/"
     api: "https://api.github.com/repos/${github.bucket.user}/${github.bucket.repository}/contents/"

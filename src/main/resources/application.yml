@@ -4,9 +4,9 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://localhost:3306/nikon
+    url: jdbc:mysql://45.145.228.53:3306/nikon
     username: root
-    password: LYH20031123
+    password: 12345678
   servlet:
     multipart:
       max-file-size: 10MB
